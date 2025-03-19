@@ -1,0 +1,4 @@
+userId,email,name,profilePicture,createdAt,rol
+"k",admin@example.com,John Doe,https://example.com/profile.jpg,2023-10-01T12:00:00Z,null
+"k",doctor@example.com,Jane Smith,https://example.com/profile2.jpg,2023-10-02T12:00:00Z,null
+"k",client@example.com,Alice Johnson,https://example.com/profile3.jpg,2023-10-03T12:00:00Z,null
