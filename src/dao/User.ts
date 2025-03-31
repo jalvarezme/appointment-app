@@ -7,9 +7,9 @@ class UserDao {
   }
 
   public async createUser(userInfo: UserProfile) {
-    const { name, email, photo, id, rol, token } = userInfo;
+    const { name, email, photo, id, rol } = userInfo;
     const [job] = await connection.createQueryJob(
-      `INSERT INTO appointment_app.user (userId, email, name, profilePicture, createdAt, rol, token) VALUES ("${id}", "${email}", "${name}", "${photo}",  CURRENT_TIMESTAMP(), "${rol}", "${token}")`,
+      `INSERT INTO appointment_app.user (userId, email, name, profilePicture, createdAt, rol) VALUES ("${id}", "${email}", "${name}", "${photo}",  CURRENT_TIMESTAMP(), "${rol}")`,
     );
 
     return {
@@ -25,11 +25,16 @@ class UserDao {
     return rows[0].emailCount > 0;
   }
 
-  public async getUserById(id: number) {
+  public async getUserById(id: string) {
     const [rows] = await connection.query(
       `SELECT * FROM appointment_app.user WHERE userId = "${id}"`,
     );
     return rows[0];
+  }
+
+  public async getAllDoctors() {
+    const [rows] = await connection.query(`SELECT * FROM appointment_app.user WHERE rol = "doctor"`);
+    return rows;
   }
 
   public async deleteUserById(id: number) {

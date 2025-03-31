@@ -2,8 +2,15 @@ import UserRepository from "../repository/User.ts";
 import { UserProfile } from "../types/User.ts";
 
 class UserService {
+  public async fetchUserById(id: string) {
+    return await UserRepository.findUserById(id);
+  }
   public async fetchAllUser() {
     return await UserRepository.findAllUsers();
+  }
+
+  public async fetchAllDoctor() {
+    return await UserRepository.findAllDoctors();
   }
 
   public async fetchAuthUser(token: string) {

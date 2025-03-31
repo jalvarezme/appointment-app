@@ -4,23 +4,26 @@ import { setCookie } from "hono/cookie";
 import { OAUTH2CLIENT, ROLE, SECRET_JWT } from "../const.ts";
 import UserService from "../services/User.ts";
 import { UserProfile } from "../types/User.ts";
-import {  create } from "https://deno.land/x/djwt@v2.9/mod.ts";
+import { create } from "https://deno.land/x/djwt@v2.9/mod.ts";
 
-export const Auth = new Hono();
+const Authentication = new Hono();
 
-Auth.get("google", (c) => {
-  const authUrl = OAUTH2CLIENT.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
-    scope: [
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email",
-    ],
-  });
+Authentication.get("google", (c) => {
+  const authUrl = OAUTH2CLIENT.generateAuthUrl(
+    {
+      access_type: "offline",
+      prompt: "consent",
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/calendar",
+      ],
+    },
+  );
   return c.redirect(authUrl);
 });
 
-Auth.get("google/callback", async (c): Promise<Response> => {
+Authentication.get("google/callback", async (c): Promise<Response> => {
   const { code } = c.req.query();
 
   if (!code) {
@@ -37,7 +40,7 @@ Auth.get("google/callback", async (c): Promise<Response> => {
     OAUTH2CLIENT.setCredentials(tokens);
 
     return c.json({
-      message: "User authenticated successfully",
+      message: "Google credentials successfully",
       error: false,
       status: 200,
       data: {
@@ -56,7 +59,7 @@ Auth.get("google/callback", async (c): Promise<Response> => {
   }
 });
 
-Auth.post("", async (c) => {
+Authentication.post("signup", async (c) => {
   try {
     const body = await c.req.json();
     const user = await UserService.fetchAuthUser(body?.token);
@@ -107,3 +110,55 @@ Auth.post("", async (c) => {
     });
   }
 });
+
+Authentication.post("signin", async (c) => {
+  try {
+    const body = await c.req.json();
+    const user = await UserService.fetchAuthUser(body?.token);
+
+    if (user?.error) {
+      throw Error("Invalid token");
+    }
+
+    const userInfo = await UserService.fetchUserById(user.id);
+
+    if (!userInfo) {
+      throw Error("Invalid userID, not registred");
+    }
+
+    const payload = {
+      userInfo,
+      exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
+    };
+
+    const secret = await SECRET_JWT;
+    const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
+
+    setCookie(c, "token", token, {
+      httpOnly: true,
+      secure: true, // Enable in production (HTTPS only)
+      maxAge: 12 * 60 * 60, // 12 hours
+      path: "/",
+      sameSite: "Strict", // Prevent CSRF attacks
+    });
+
+    return c.json({
+      message: "User authenticated successfully",
+      error: false,
+      status: 200,
+      data: {
+        user: userInfo,
+      },
+    });
+  } catch (error) {
+    console.error("Error during getting user auth:", error);
+    return c.json({
+      message: "Internal server error",
+      error: true,
+      status: 500,
+      data: null,
+    });
+  }
+});
+
+export default Authentication;
