@@ -51,7 +51,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     };
     const html = `
       <script>
-        window.opener.postMessage(${response}, "http://localhost:4321");
+        window.opener.postMessage(${JSON.stringify(response)}, "http://localhost:4321");
         window.close();
       </script>
     `;
