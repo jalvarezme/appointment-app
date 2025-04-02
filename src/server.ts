@@ -6,7 +6,14 @@ import { cors } from "hono/cors";
 
 const app = new Hono().basePath("/api/v1");
 
-app.use("*", cors());
+app.use("*", cors({
+  origin: "*",
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+  allowHeaders: ['*'], // Allow all headers
+  exposeHeaders: ['*'], // Expose all headers
+  credentials: true, // Allow credentials if needed
+  maxAge: 86400, // Cache CORS preflight for 24 hours
+}));
 
 app.route("user", UserController);
 
