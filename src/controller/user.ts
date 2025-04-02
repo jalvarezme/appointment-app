@@ -1,6 +1,6 @@
 import { Context, Hono } from "hono";
 import UserService from "../services/User.ts";
-import { jwtMiddleware } from "../../middlewares.ts";
+import { jwtMiddleware } from "../middlewares.ts";
 
 export const UserController = new Hono();
 

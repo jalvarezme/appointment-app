@@ -2,7 +2,7 @@ import { verify } from "https://deno.land/x/djwt@v2.9/mod.ts"; // For JWT verifi
 import { Next } from "hono/types";
 import { Context } from "hono";
 import { getCookie } from "hono/cookie";
-import { SECRET_JWT } from "./src/const.ts";
+import { SECRET_JWT } from "./const.ts";
 
 export const jwtMiddleware = async (c: Context, next: Next) => {
   const token = getCookie(c, "token");

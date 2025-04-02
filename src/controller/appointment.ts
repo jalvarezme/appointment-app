@@ -1,5 +1,5 @@
 import { Context, Hono } from "hono";
-import { jwtMiddleware } from "../../middlewares.ts";
+import { jwtMiddleware } from "../middlewares.ts";
 import Appointment from "../services/Appointment.ts";
 
 export const AppointmentController = new Hono();
