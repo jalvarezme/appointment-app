@@ -39,7 +39,8 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     const { tokens } = await OAUTH2CLIENT.getToken(code);
     OAUTH2CLIENT.setCredentials(tokens);
 
-    return c.json({
+    // After getting tokens
+    const response = {
       message: "Google credentials successfully",
       error: false,
       status: 200,
@@ -47,7 +48,14 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         token: tokens.access_token,
         expiry_date: tokens.expiry_date,
       },
-    });
+    };
+    const html = `
+      <script>
+        window.opener.postMessage(${response}, "http://localhost:4321");
+        window.close();
+      </script>
+    `;
+    return c.html(html);
   } catch (error) {
     console.error("Error during Google OAuth:", error);
     return c.json({
