@@ -27,43 +27,61 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
   const { code } = c.req.query();
 
   if (!code) {
-    return c.json({
-      message: "Error during Google OAuth",
-      error: true,
-      status: 400,
-      data: null,
-    });
+    const html = `
+      <script>
+        window.opener.postMessage(${
+      JSON.stringify({
+        message: "Error during Google OAuth",
+        error: true,
+        status: 400,
+        data: null,
+      })
+    }, "http://localhost:4321");
+        window.close();
+      </script>
+    `;
+    return c.html(html);
   }
 
   try {
     const { tokens } = await OAUTH2CLIENT.getToken(code);
     OAUTH2CLIENT.setCredentials(tokens);
 
-    // After getting tokens
-    const response = {
-      message: "Google credentials successfully",
-      error: false,
-      status: 200,
-      data: {
-        token: tokens.access_token,
-        expiry_date: tokens.expiry_date,
-      },
-    };
+    // we can do this, or the redirect  return c.redirect('http://localhost:4321?token=your_token');
     const html = `
       <script>
-        window.opener.postMessage(${JSON.stringify(response)}, "http://localhost:4321");
+        window.opener.postMessage(${
+      JSON.stringify({
+        message: "Google credentials successfully",
+        error: false,
+        status: 200,
+        data: {
+          token: tokens.access_token,
+          expiry_date: tokens.expiry_date,
+        },
+      })
+    }, "http://localhost:4321");
         window.close();
       </script>
     `;
     return c.html(html);
   } catch (error) {
     console.error("Error during Google OAuth:", error);
-    return c.json({
-      message: "Internal server error",
-      error: true,
-      status: 500,
-      data: null,
-    });
+
+    const html = `
+      <script>
+        window.opener.postMessage(${
+      JSON.stringify({
+        message: "Internal server error",
+        error: true,
+        status: 500,
+        data: null,
+      })
+    }, "http://localhost:4321");
+        window.close();
+      </script>
+    `;
+    return c.html(html);
   }
 });
 
