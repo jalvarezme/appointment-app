@@ -37,7 +37,6 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         data: null,
       })
     }, "http://localhost:4321");
-        window.close();
       </script>
     `;
     return c.html(html);
@@ -61,7 +60,6 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         },
       })
     }, "http://localhost:4321");
-        window.close();
       </script>
     `;
     return c.html(html);
@@ -78,7 +76,6 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         data: null,
       })
     }, "http://localhost:4321");
-        window.close();
       </script>
     `;
     return c.html(html);
