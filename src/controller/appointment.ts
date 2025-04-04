@@ -6,9 +6,10 @@ export const AppointmentController = new Hono();
 
 AppointmentController.use("*", jwtMiddleware); // trasnform to decorator
 
-AppointmentController.get("/getAllAppointment/:token", async (c: Context) => {
+AppointmentController.get("/getAllAppointment/", async (c: Context) => {
   try {
-    const token = c.req.param("token")
+    const token = c.get("jwtPayload")?.user?.token; // get token from jwt payload
+    console.log(c.get("jwtPayload"))
     const listAppoinment = await Appointment.fetchAppointments(token);
 
     return c.json({

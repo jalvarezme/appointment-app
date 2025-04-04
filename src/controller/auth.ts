@@ -100,7 +100,10 @@ Authentication.post("signup", async (c) => {
     };
 
     const payload = {
-      UserProfile,
+      user: {
+        ...UserProfile,
+        token: body?.token,
+      },
       exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
     };
 
@@ -116,7 +119,7 @@ Authentication.post("signup", async (c) => {
     });
 
     return c.json({
-      message: "User authenticated successfully",
+      message: "User registred successfully",
       error: false,
       status: 200,
       data: {
@@ -150,9 +153,13 @@ Authentication.post("signin", async (c) => {
     }
 
     const payload = {
-      userInfo,
+      user: {
+        ...userInfo,
+        token: body?.token,
+      },
       exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
     };
+
 
     const secret = await SECRET_JWT;
     const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
@@ -164,7 +171,6 @@ Authentication.post("signin", async (c) => {
       path: "/",
       sameSite: "Strict", // Prevent CSRF attacks
     });
-
     return c.json({
       message: "User authenticated successfully",
       error: false,

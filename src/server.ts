@@ -7,12 +7,12 @@ import { cors } from "hono/cors";
 const app = new Hono().basePath("/api/v1");
 
 app.use("*", cors({
-  origin: "*",
+  origin: "http://localhost:4321",
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-  allowHeaders: ['*'], // Allow all headers
+  allowHeaders: ['Content-Type', 'Authorization'], // Allow all headers
   exposeHeaders: ['*'], // Expose all headers
   credentials: true, // Allow credentials if needed
-  maxAge: 86400, // Cache CORS preflight for 24 hours
+  // maxAge: 86400, // Cache CORS preflight for 24 hours
 }));
 
 app.route("user", UserController);
