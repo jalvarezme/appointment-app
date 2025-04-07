@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 
 import { OAUTH2CLIENT, ROLE, SECRET_JWT } from "../const.ts";
 import UserService from "../services/User.ts";
@@ -160,7 +160,6 @@ Authentication.post("signin", async (c) => {
       exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
     };
 
-
     const secret = await SECRET_JWT;
     const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
 
@@ -188,6 +187,23 @@ Authentication.post("signin", async (c) => {
       data: null,
     });
   }
+});
+
+Authentication.post("logout", (c) => {
+  deleteCookie(c, "token", {
+    httpOnly: true,
+    secure: true, // Enable in production (HTTPS only)
+    maxAge: 12 * 60 * 60, // 12 hours
+    path: "/",
+    sameSite: "Strict", // Prevent CSRF attacks
+  });
+
+  return c.json({
+    message: "Logged out",
+    error: false,
+    status: 200,
+    data: null,
+  });
 });
 
 export default Authentication;
