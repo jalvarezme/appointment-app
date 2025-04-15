@@ -121,7 +121,7 @@ Authentication.post("signup", async (c) => {
       httpOnly: true,
       secure: true, // Enable in production (HTTPS only)
       maxAge: 12 * 60 * 60, // 12 hours
-      domain: Deno.env.get("WEBSITE_URL"),
+  
       path: "/",
       sameSite: "Strict", // Prevent CSRF attacks
     });
@@ -175,7 +175,7 @@ Authentication.post("signin", async (c) => {
       httpOnly: true,
       secure: true, // Enable in production (HTTPS only)
       maxAge: 12 * 60 * 60, // 12 hours
-      domain: Deno.env.get("WEBSITE_URL"),
+     
       path: "/",
       sameSite: "Strict", // Prevent CSRF attacks
     });
