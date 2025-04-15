@@ -122,7 +122,7 @@ Authentication.post("signup", async (c) => {
       secure: true,       // Required for SameSite=None
       maxAge: 12 * 60 * 60, // 12 hours
       path: "/",
-      sameSite: "None",   // Required for cross-origin cookies
+      sameSite: "lax",   // Required for cross-origin cookies
       // domain: "localhost" // Explicitly set the target domain
     });
 
@@ -176,7 +176,7 @@ Authentication.post("signin", async (c) => {
       secure: true,       // Required for SameSite=None
       maxAge: 12 * 60 * 60, // 12 hours
       path: "/",
-      sameSite: "None",   // Required for cross-origin cookies
+      sameSite: "lax",   // Required for cross-origin cookies
       // domain: "localhost" // Explicitly set the target domain
     });
     return c.json({
@@ -204,7 +204,7 @@ Authentication.post("logout", (c) => {
     secure: true, // Enable in production (HTTPS only)
     maxAge: 12 * 60 * 60, // 12 hours
     path: "/",
-    sameSite: "None", // Prevent CSRF attacks
+    sameSite: "lax",   // Required for cross-origin cookies
   });
 
   return c.json({
