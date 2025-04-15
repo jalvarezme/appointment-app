@@ -50,7 +50,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     // we can do this, or the redirect  return c.redirect('http://localhost:4321?token=your_token');
     const html = `
       <script>
-        window.opener.postMessage(${
+    const message = ${
       JSON.stringify({
         message: "Google credentials successfully",
         error: false,
@@ -60,11 +60,24 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
           expiry_date: tokens.expiry_date,
         },
       })
-    }, "${Deno.env.get("WEBSITE_URL")}");
+    };
+
+    const targetOrigin = "${Deno.env.get("WEBSITE_URL")}";
     
+      // First try to send via postMessage
+      if (window.opener) {
+        window.opener.postMessage(message, targetOrigin);
+      } else {
+        throw new Error("No window opener");
+      }
+    
+    
+    // Close the window after a short delay
+    setTimeout(() => window.close(), 500);
+
       </script>
     `;
-   
+
     c.res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
     c.res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
     return c.html(html);
