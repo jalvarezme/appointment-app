@@ -123,7 +123,7 @@ Authentication.post("signup", async (c) => {
       maxAge: 12 * 60 * 60, // 12 hours
   
       path: "/",
-      sameSite: "Strict", // Prevent CSRF attacks
+      sameSite: "None", // Prevent CSRF attacks
     });
 
     return c.json({
@@ -177,7 +177,7 @@ Authentication.post("signin", async (c) => {
       maxAge: 12 * 60 * 60, // 12 hours
      
       path: "/",
-      sameSite: "Strict", // Prevent CSRF attacks
+      sameSite: "None", // Prevent CSRF attacks
     });
     return c.json({
       message: "User authenticated successfully",
@@ -204,7 +204,7 @@ Authentication.post("logout", (c) => {
     secure: true, // Enable in production (HTTPS only)
     maxAge: 12 * 60 * 60, // 12 hours
     path: "/",
-    sameSite: "Strict", // Prevent CSRF attacks
+    sameSite: "None", // Prevent CSRF attacks
   });
 
   return c.json({
