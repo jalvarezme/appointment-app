@@ -6,8 +6,10 @@ import { cors } from "hono/cors";
 
 const app = new Hono().basePath("/api/v1");
 
+console.log(`${Deno.env.get("WEBSITE_URL")}`);
+
 app.use("*", cors({
-  origin: "http://localhost:4321",
+  origin: `${Deno.env.get("WEBSITE_URL")}`, // Allow requests from this origin
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
   allowHeaders: ['Content-Type', 'Authorization'], // Allow all headers
   exposeHeaders: ['*'], // Expose all headers

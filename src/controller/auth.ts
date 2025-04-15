@@ -25,7 +25,6 @@ Authentication.get("google", (c) => {
 
 Authentication.get("google/callback", async (c): Promise<Response> => {
   const { code } = c.req.query();
-
   if (!code) {
     const html = `
       <script>
@@ -36,7 +35,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         status: 400,
         data: null,
       })
-    }, "http://localhost:4321");
+    }, "${Deno.env.get("WEBSITE_URL")}");
       </script>
     `;
     return c.html(html);
@@ -59,7 +58,8 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
           expiry_date: tokens.expiry_date,
         },
       })
-    }, "http://localhost:4321");
+    }, "${Deno.env.get("WEBSITE_URL")}");
+    
       </script>
     `;
     return c.html(html);
@@ -75,7 +75,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
         status: 500,
         data: null,
       })
-    }, "http://localhost:4321");
+    }, "${Deno.env.get("WEBSITE_URL")}");
       </script>
     `;
     return c.html(html);

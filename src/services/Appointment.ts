@@ -1,4 +1,4 @@
-import { calendar_v3, google } from "googleapis";
+import { google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 
 class AppointmentService {
@@ -15,17 +15,14 @@ class AppointmentService {
       singleEvents: true,
       q: "Orthoplus",
     });
-    console.log("test");
 
     const events = response.data.items;
 
     if (!events || events.length === 0) {
       console.log("No upcoming events found");
-      return;
+      return []
     }
-    events.forEach((event: calendar_v3.Schema$Event) => {
-      console.log(JSON.stringify(event));
-    });
+    return events;
   }
 }
 

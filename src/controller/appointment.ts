@@ -9,7 +9,6 @@ AppointmentController.use("*", jwtMiddleware); // trasnform to decorator
 AppointmentController.get("/getAllAppointment/", async (c: Context) => {
   try {
     const token = c.get("jwtPayload")?.user?.token; // get token from jwt payload
-    console.log(c.get("jwtPayload"))
     const listAppoinment = await Appointment.fetchAppointments(token);
 
     return c.json({
