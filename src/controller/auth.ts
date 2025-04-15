@@ -119,11 +119,11 @@ Authentication.post("signup", async (c) => {
 
     setCookie(c, "token", token, {
       httpOnly: true,
-      secure: true, // Enable in production (HTTPS only)
+      secure: true,       // Required for SameSite=None
       maxAge: 12 * 60 * 60, // 12 hours
-  
       path: "/",
-      sameSite: "None", // Prevent CSRF attacks
+      sameSite: "None",   // Required for cross-origin cookies
+      domain: "localhost" // Explicitly set the target domain
     });
 
     return c.json({
@@ -173,11 +173,11 @@ Authentication.post("signin", async (c) => {
 
     setCookie(c, "token", token, {
       httpOnly: true,
-      secure: true, // Enable in production (HTTPS only)
+      secure: true,       // Required for SameSite=None
       maxAge: 12 * 60 * 60, // 12 hours
-     
       path: "/",
-      sameSite: "None", // Prevent CSRF attacks
+      sameSite: "None",   // Required for cross-origin cookies
+      domain: "localhost" // Explicitly set the target domain
     });
     return c.json({
       message: "User authenticated successfully",
