@@ -123,7 +123,7 @@ Authentication.post("signup", async (c) => {
       maxAge: 12 * 60 * 60, // 12 hours
       path: "/",
       sameSite: "None",   // Required for cross-origin cookies
-      domain: "localhost" // Explicitly set the target domain
+      // domain: "localhost" // Explicitly set the target domain
     });
 
     return c.json({
@@ -177,7 +177,7 @@ Authentication.post("signin", async (c) => {
       maxAge: 12 * 60 * 60, // 12 hours
       path: "/",
       sameSite: "None",   // Required for cross-origin cookies
-      domain: "localhost" // Explicitly set the target domain
+      // domain: "localhost" // Explicitly set the target domain
     });
     return c.json({
       message: "User authenticated successfully",
