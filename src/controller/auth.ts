@@ -38,6 +38,8 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     }, "${Deno.env.get("WEBSITE_URL")}");
       </script>
     `;
+    c.res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    c.res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
     return c.html(html);
   }
 
@@ -62,6 +64,9 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     
       </script>
     `;
+   
+    c.res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    c.res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
     return c.html(html);
   } catch (error) {
     console.error("Error during Google OAuth:", error);
@@ -78,6 +83,8 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     }, "${Deno.env.get("WEBSITE_URL")}");
       </script>
     `;
+    c.res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    c.res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
     return c.html(html);
   }
 });
