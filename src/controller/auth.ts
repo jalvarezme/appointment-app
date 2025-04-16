@@ -173,10 +173,10 @@ Authentication.post("signin", async (c) => {
         token // Send token in response body
       },
     });
-  } catch (error) {
+  } catch (error:any) {
     console.error("Error during getting user auth:", error);
     return c.json({
-      message: "Internal server error",
+      message: error.message || "Internal server error",
       error: true,
       status: 500,
       data: null,
