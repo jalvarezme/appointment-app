@@ -21,7 +21,7 @@ export const jwtMiddleware = async (c: Context, next: Next) => {
   const token = authHeader.replace("Bearer ", "").trim();
 
   try {
-    const secret = new TextEncoder().encode(await SECRET_JWT);
+    const secret = new TextEncoder().encode(SECRET_JWT);
     const { payload } = await jwtVerify(token, secret);
 
     c.set("jwtPayload", payload);
