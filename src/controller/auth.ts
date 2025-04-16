@@ -89,6 +89,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
   }
 });
 
+// Updated signup endpoint
 Authentication.post("signup", async (c) => {
   try {
     const body = await c.req.json();
@@ -117,21 +118,13 @@ Authentication.post("signup", async (c) => {
     const secret = await SECRET_JWT;
     const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
 
-    setCookie(c, "token", token, {
-      httpOnly: true,
-      secure: true,       // Required for SameSite=None
-      maxAge: 12 * 60 * 60, // 12 hours
-      path: "/",
-      sameSite: "lax",   // Required for cross-origin cookies
-      // domain: "localhost" // Explicitly set the target domain
-    });
-
     return c.json({
-      message: "User registred successfully",
+      message: "User registered successfully",
       error: false,
       status: 200,
       data: {
         user: await UserService.register(UserProfile),
+        token // Send token in response body
       },
     });
   } catch (error) {
@@ -157,7 +150,7 @@ Authentication.post("signin", async (c) => {
     const userInfo = await UserService.fetchUserById(user.id);
 
     if (!userInfo) {
-      throw Error("Invalid userID, not registred");
+      throw Error("Invalid userID, not registered");
     }
 
     const payload = {
@@ -171,20 +164,13 @@ Authentication.post("signin", async (c) => {
     const secret = await SECRET_JWT;
     const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
 
-    setCookie(c, "token", token, {
-      httpOnly: true,
-      secure: true,       // Required for SameSite=None
-      maxAge: 12 * 60 * 60, // 12 hours
-      path: "/",
-      sameSite: "lax",   // Required for cross-origin cookies
-      // domain: "localhost" // Explicitly set the target domain
-    });
     return c.json({
       message: "User authenticated successfully",
       error: false,
       status: 200,
       data: {
         user: userInfo,
+        token // Send token in response body
       },
     });
   } catch (error) {
@@ -198,17 +184,11 @@ Authentication.post("signin", async (c) => {
   }
 });
 
+// Updated logout endpoint
 Authentication.post("logout", (c) => {
-  deleteCookie(c, "token", {
-    httpOnly: true,
-    secure: true, // Enable in production (HTTPS only)
-    maxAge: 12 * 60 * 60, // 12 hours
-    path: "/",
-    sameSite: "lax",   // Required for cross-origin cookies
-  });
-
+  // With JWT, logout is handled client-side by removing the token
   return c.json({
-    message: "Logged out",
+    message: "Logout successful - clear your token client-side",
     error: false,
     status: 200,
     data: null,
