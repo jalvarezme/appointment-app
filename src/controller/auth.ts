@@ -159,7 +159,7 @@ Authentication.post("signin", async (c) => {
       },
     };
 
-    const secret = new TextEncoder().encode(await SECRET_JWT);
+    const secret = new TextEncoder().encode(SECRET_JWT);
     const token = await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("12h")

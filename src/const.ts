@@ -7,7 +7,7 @@ export const GOOGLE_OPTIONS = {
   redirectUri: Deno.env.get("GOOGLE_REDIRECT_URI") || "",
 };
 
-export const SECRET_JWT = Deno.env.get("GOOGLE_CLIENT_SECRET") || "";
+export const SECRET_JWT = Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY") || "";
 
 export const OAUTH2CLIENT = new OAuth2Client({...GOOGLE_OPTIONS});
 
