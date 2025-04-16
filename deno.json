@@ -3,6 +3,7 @@
     "@google-cloud/bigquery": "npm:@google-cloud/bigquery@^7.9.2",
     "@hono/swagger-ui": "npm:@hono/swagger-ui@^0.5.1",
     "@types/passport-google-oauth20": "npm:@types/passport-google-oauth20@^2.0.16",
+    "@zaubrik/djwt": "jsr:@zaubrik/djwt@^3.0.2",
     "google-auth-library": "npm:google-auth-library@^9.15.1",
     "googleapis": "npm:googleapis@^146.0.0",
     "hono": "jsr:@hono/hono@^4.7.4",

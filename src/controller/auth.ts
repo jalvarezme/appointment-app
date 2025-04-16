@@ -4,7 +4,7 @@ import { deleteCookie, setCookie } from "hono/cookie";
 import { OAUTH2CLIENT, ROLE, SECRET_JWT } from "../const.ts";
 import UserService from "../services/User.ts";
 import { UserProfile } from "../types/User.ts";
-import { create } from "https://deno.land/x/djwt@v2.9/mod.ts";
+import {create} from "@zaubrik/djwt";
 
 const Authentication = new Hono();
 
@@ -176,7 +176,7 @@ Authentication.post("signin", async (c) => {
   } catch (error:any) {
     console.error("Error during getting user auth:", error);
     return c.json({
-      message: error || "Internal server error",
+      message: JSON.stringify(error) || "Internal server error",
       error: true,
       status: 500,
       data: null,

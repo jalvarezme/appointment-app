@@ -2,6 +2,8 @@
   "version": "4",
   "specifiers": {
     "jsr:@hono/hono@^4.7.4": "4.7.4",
+    "jsr:@std/encoding@0.224.0": "0.224.0",
+    "jsr:@zaubrik/djwt@^3.0.2": "3.0.2",
     "npm:@google-cloud/bigquery@^7.9.2": "7.9.2",
     "npm:@hono/swagger-ui@~0.5.1": "0.5.1_hono@4.7.4",
     "npm:@types/node@*": "22.12.0",
@@ -17,6 +19,15 @@
   "jsr": {
     "@hono/hono@4.7.4": {
       "integrity": "c03c9cbe0fbfc4e51f3fee6502a7903aa4f9ef7c2c98635607b15eee14258825"
+    },
+    "@std/encoding@0.224.0": {
+      "integrity": "efb6dca97d3e9c31392bd5c8cfd9f9fc9decf5a1f4d1f78af7900a493bcf89b5"
+    },
+    "@zaubrik/djwt@3.0.2": {
+      "integrity": "8070adaa49cd9e5d2b8ae82fd461132c966ef2f8ff8378db4a4da8df4f17c664",
+      "dependencies": [
+        "jsr:@std/encoding"
+      ]
     }
   },
   "npm": {
@@ -685,6 +696,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@hono/hono@^4.7.4",
+      "jsr:@zaubrik/djwt@^3.0.2",
       "npm:@google-cloud/bigquery@^7.9.2",
       "npm:@hono/swagger-ui@~0.5.1",
       "npm:@types/passport-google-oauth20@^2.0.16",
