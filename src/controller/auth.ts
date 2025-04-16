@@ -4,7 +4,11 @@ import { deleteCookie, setCookie } from "hono/cookie";
 import { OAUTH2CLIENT, ROLE, SECRET_JWT } from "../const.ts";
 import UserService from "../services/User.ts";
 import { UserProfile } from "../types/User.ts";
-import {create} from "@zaubrik/djwt";
+
+import {
+  SignJWT,
+  jwtVerify,
+} from "https://deno.land/x/jose@v5.2.0/index.ts";
 
 const Authentication = new Hono();
 
@@ -89,15 +93,12 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
   }
 });
 
-// Updated signup endpoint
 Authentication.post("signup", async (c) => {
   try {
     const body = await c.req.json();
     const user = await UserService.fetchAuthUser(body?.token);
 
-    if (user?.error) {
-      throw Error("Invalid token");
-    }
+    if (user?.error) throw Error("Invalid token");
 
     const UserProfile: UserProfile = {
       id: user.id,
@@ -112,11 +113,13 @@ Authentication.post("signup", async (c) => {
         ...UserProfile,
         token: body?.token,
       },
-      exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
     };
 
-    const secret = await SECRET_JWT;
-    const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
+    const secret = new TextEncoder().encode(SECRET_JWT);
+    const token = await new SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("12h")
+      .sign(secret);
 
     return c.json({
       message: "User registered successfully",
@@ -124,7 +127,7 @@ Authentication.post("signup", async (c) => {
       status: 200,
       data: {
         user: await UserService.register(UserProfile),
-        token // Send token in response body
+        token,
       },
     });
   } catch (error) {
@@ -138,31 +141,29 @@ Authentication.post("signup", async (c) => {
   }
 });
 
+// Updated signin endpoint
 Authentication.post("signin", async (c) => {
   try {
     const body = await c.req.json();
     const user = await UserService.fetchAuthUser(body?.token);
 
-    if (user?.error) {
-      throw Error("Invalid token");
-    }
+    if (user?.error) throw Error("Invalid token");
 
     const userInfo = await UserService.fetchUserById(user.id);
-
-    if (!userInfo) {
-      throw Error("Invalid userID, not registered");
-    }
+    if (!userInfo) throw Error("Invalid userID, not registered");
 
     const payload = {
       user: {
         ...userInfo,
         token: body?.token,
       },
-      exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
     };
 
-    const secret = await SECRET_JWT;
-    const token = await create({ alg: "HS256", typ: "JWT" }, payload, secret);
+    const secret = new TextEncoder().encode(await SECRET_JWT);
+    const token = await new SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("12h")
+      .sign(secret);
 
     return c.json({
       message: "User authenticated successfully",
@@ -170,13 +171,13 @@ Authentication.post("signin", async (c) => {
       status: 200,
       data: {
         user: userInfo,
-        token // Send token in response body
+        token,
       },
     });
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error during getting user auth:", error);
     return c.json({
-      message: JSON.stringify(error) || "Internal server error",
+      message: error.message || "Internal server error",
       error: true,
       status: 500,
       data: null,

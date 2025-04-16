@@ -1,12 +1,12 @@
-import { verify } from "https://deno.land/x/djwt@v2.9/mod.ts"; // For JWT verification
+import { jwtVerify } from "https://deno.land/x/jose@v5.2.0/index.ts";
 import { Next } from "hono/types";
 import { Context } from "hono";
 import { SECRET_JWT } from "./const.ts";
 
 export const jwtMiddleware = async (c: Context, next: Next) => {
-  // Get token from Authorization header
-  const authHeader = c.req.header('Authorization');
-  if (!authHeader) {
+  const authHeader = c.req.header("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return c.json(
       {
         message: "Unauthorized: No token provided",
@@ -14,35 +14,28 @@ export const jwtMiddleware = async (c: Context, next: Next) => {
         status: 401,
         data: null,
       },
-      401,
+      401
     );
   }
 
-  // Expecting "Bearer <token>"
-  const token = authHeader.split(' ')[1];
-  if (!token) {
+  const token = authHeader.replace("Bearer ", "").trim();
+
+  try {
+    const secret = new TextEncoder().encode(await SECRET_JWT);
+    const { payload } = await jwtVerify(token, secret);
+
+    c.set("jwtPayload", payload);
+    await next();
+  } catch (err) {
+    console.error("JWT verification error:", err);
     return c.json(
       {
-        message: "Unauthorized: Malformed token",
+        message: "Unauthorized: Invalid or expired token",
         error: true,
         status: 401,
         data: null,
       },
-      401,
+      401
     );
-  }
-
-  try {
-    const payload = await verify(token, await SECRET_JWT);
-    c.set("jwtPayload", payload);
-    await next();
-  } catch (err) {
-    console.log(err);
-    return c.json({
-      message: "Unauthorized: Invalid or expired token",
-      error: true,
-      status: 401,
-      data: null,
-    }, 401);
   }
 };
