@@ -7,7 +7,7 @@ export const GOOGLE_OPTIONS = {
   redirectUri: Deno.env.get("GOOGLE_REDIRECT_URI") || "",
 };
 
-export const SECRET_JWT = Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY") || "";
+export const SECRET_JWT = Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY")?.replace(/\\n/g, '\n') || "";
 
 export const OAUTH2CLIENT = new OAuth2Client({...GOOGLE_OPTIONS});
 
@@ -22,7 +22,7 @@ export const BIG_QUERY_CRED = {
   "type": Deno.env.get("GOOGLE_BIGQUERY_TYPE"),
   "project_id": Deno.env.get("GOOGLE_BIGQUERY_PROJECT_ID"),
   "private_key_id": Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY_ID"),
-  "private_key": Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY"),
+  "private_key": Deno.env.get("GOOGLE_BIGQUERY_PRIVATE_KEY")?.replace(/\\n/g, '\n'),
   "client_email": Deno.env.get("GOOGLE_BIGQUERY_CLIENT_EMAIL"),
   "client_id": Deno.env.get("GOOGLE_BIGQUERY_CLIENT_ID"),
   "auth_uri": Deno.env.get("GOOGLE_BIGQUERY_AUTH_URI"),
