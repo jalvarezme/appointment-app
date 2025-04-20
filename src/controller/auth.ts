@@ -5,10 +5,7 @@ import { OAUTH2CLIENT, ROLE, SECRET_JWT } from "../const.ts";
 import UserService from "../services/User.ts";
 import { UserProfile } from "../types/User.ts";
 
-import {
-  SignJWT,
-  jwtVerify,
-} from "https://deno.land/x/jose@v5.2.0/index.ts";
+import { jwtVerify, SignJWT } from "https://deno.land/x/jose@v5.2.0/index.ts";
 
 const Authentication = new Hono();
 
@@ -49,7 +46,8 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
 
   try {
     const { tokens } = await OAUTH2CLIENT.getToken(code);
-    OAUTH2CLIENT.setCredentials(tokens);
+    console.log(tokens);
+    // OAUTH2CLIENT.setCredentials(tokens);
 
     // we can do this, or the redirect  return c.redirect('http://localhost:4321?token=your_token');
     const html = `
@@ -68,7 +66,7 @@ Authentication.get("google/callback", async (c): Promise<Response> => {
     
       </script>
     `;
-   
+
     // c.res.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
     // c.res.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
     return c.html(html);
@@ -98,7 +96,15 @@ Authentication.post("signup", async (c) => {
     const body = await c.req.json();
     const user = await UserService.fetchAuthUser(body?.token);
 
-    if (user?.error) throw Error("Invalid token");
+    if (user?.error) {
+      console.log("Invalid token");
+      return c.json({
+        message: "Invalid token",
+        error: true,
+        status: 400,
+        data: null,
+      }, 400);
+    }
 
     const UserProfile: UserProfile = {
       id: user.id,
@@ -137,7 +143,7 @@ Authentication.post("signup", async (c) => {
       error: true,
       status: 500,
       data: null,
-    });
+    }, 500);
   }
 });
 
@@ -147,10 +153,26 @@ Authentication.post("signin", async (c) => {
     const body = await c.req.json();
     const user = await UserService.fetchAuthUser(body?.token);
 
-    if (user?.error) throw Error("Invalid token");
+    if (user?.error) {
+      console.log("Invalid token");
+      return c.json({
+        message: "Invalid token",
+        error: true,
+        status: 400,
+        data: null,
+      }, 400);
+    }
 
     const userInfo = await UserService.fetchUserById(user.id);
-    if (!userInfo) throw Error("Invalid userID, not registered");
+    if (!userInfo) {
+      console.log("Invalid userID, not registered");
+      return c.json({
+        message: "Invalid userID, not registered",
+        error: true,
+        status: 400,
+        data: null,
+      }, 400);
+    }
 
     const payload = {
       user: {
@@ -181,7 +203,7 @@ Authentication.post("signin", async (c) => {
       error: true,
       status: 500,
       data: null,
-    });
+    }, 500);
   }
 });
 

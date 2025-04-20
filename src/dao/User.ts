@@ -11,10 +11,9 @@ class UserDao {
     const [job] = await connection.createQueryJob(
       `INSERT INTO appointment_app.user (userId, email, name, profilePicture, createdAt, rol) VALUES ("${id}", "${email}", "${name}", "${photo}",  CURRENT_TIMESTAMP(), "${rol}")`,
     );
-
+    
     return {
-      userInfo,
-      job: await job.getQueryResults(),
+      ...userInfo
     };
   }
 
